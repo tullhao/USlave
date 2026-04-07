@@ -1,6 +1,6 @@
 # USlave – ACE Pro as a Controlled Filament Transport for Snapmaker U1
 
-USlave is a SnapACE-inspired project that transforms the ACE Pro into a controlled, deterministic filament transport system for the Snapmaker U1.
+USlave is a fork / derivative work of SnapACE that transforms the ACE Pro into a controlled, deterministic filament transport system for the Snapmaker U1.
 
 Instead of acting as a constantly assisting feeder, the ACE becomes a **precise, on-demand “slave” motor** used only when required.
 
