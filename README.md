@@ -1,133 +1,141 @@
-# USlave – ACE Pro as a Controlled Filament Transport for Snapmaker U1
+USlave 🔧 Just another U1 + ACE Pro Custom Project
 
-USlave is a fork / derivative work of SnapACE that transforms the ACE Pro into a controlled, deterministic filament transport system for the Snapmaker U1.
-
-Instead of acting as a constantly assisting feeder, the ACE becomes a **precise, on-demand “slave” motor** used only when required.
+A custom **Snapmaker U1 + ACE Pro** setup based on **SnapACE / MultiAce** ideas, adapted and tuned for my own real machine and maybe yours too?
 
 ---
 
-## 🚀 Key Idea
+## 🎯 Goal
 
-> The ACE should not “help” all the time — it should only move when explicitly needed.
+The goal of this project is **not** to make ACE more aggressive or more “automatic” like other similar Projects.
 
-USlave focuses on:
+The goal is:
 
-* predictable behavior
-* reduced noise
-* controlled filament movement
-* improved usability for difficult filament paths
+- ✅ Have the Ace Pro as Load/Unload/dryer Slave
+- ✅ reloads when filament is still partly inside the tube
+- ✅ Print out of the dry/heaterbox
+- ✅ stabilize chained unload behavior
+- ✅ add practical service / recovery macros
+- ✅ replace the weak stock U1 side motors handling over the filament transport job to the ACE...
+- ✅ deterministic control over hidden automation
+- ✅ ACE in Idle during prints and non load/unload jobs
+- ✅ Feeding / retracting Idle unused Toolheads to prepare/unwind filament.
 
 ---
 
-## 🔧 Features
+## ⚙️ Current Test performed
 
-* ACE-only filament transport (no reliance on side feed motor)
-* Automatic preload on real insertion (empty → occupied detection)
-* Safe interaction with toolhead sensors
-* No blind long pushes (sensor-based stop behavior)
-* Per-toolhead PTFE calibration
-* Reduced motor activity (no constant assist noise)
-* Manual service macros for feed/retract
-* Compatible with stock U1 load/unload workflow
+- ⚠️ set longer tubes as in reality -> when runoutsensor is reached, retracts 10cm
+- ⚠️ Load all Filaments from the Menu at once ( Tuned the timings and implemented guards )
+- ⚠️ Unload all, Tuned timings for the Ace to be ready when needed
+- ⚠️ Reload with Filament partially in the tube without timeout from U1 ( retry logic in cfg )
+- ⚠️ Retract/Feed while Toolhead ready, no movement as expected and Console Output
+- ⚠️ Retract/Feed unused Slots while machine is Printing
+
+- RFID is not tested by my, Apparenty only ACE RFID is supported. different as if you use the side mounted readers of the U1
+
+
+## ✅ What currently works well
+
+- **load / unload** performed by the ACE
+-  **half-in-tube reload** same as Stock
+- stable **chained unload timing**
+- protected **manual feed / retract macros**
+- configurable **retry / delay values**
+- useful **service/heating and testing macros**
+- practical tuning workflow through extended config values
+
+---
+
+## 🧪 What is still being refined
+
+Eliminating a bug that if a filament was discovered to been retracted 10cm due to long feed_length in console, the first load job might not start. but 1 of 10 times this bug appeared for me.
+
+The next challenge is simple:
+
+- ⚠️ refine and tune extra ACE movement to slim down all the timings. Maybe no retry logics or guards are necessary if the correct values were found in the scripts... But my limited knowledge and AI got me so far :)
+
+
+So the project is already usable for me and I have tested it now for multiple days and refined the issues I encountered and could solve, but it is still under active refinement. 
+Your help is very welcome for the coding part as I have only used basic programming knowledge and a not so intelligent AI to implement most of the changes. 
+
+There are other Projects out there way more refined than mine (SnapAce,MultiAce etc)
+USlave serves exactly what I need and not more. Shout out the other U1/ACE Projects!!
 
 ---
 
 ## 🧠 Design Philosophy
 
-* No automation without a confirmed state
-* No blind movements
-* No loops
-* Deterministic behavior over “smart guessing”
+This project follows a few simple rules:
+
+- ✅ keep flows that already works
+- ✅ avoid unnecessary motor activity during extruder moves on multicolor Prints
+- ✅ avoid “smart but random” behavior ( SnapACE does the job perfectly by helping the U1, but in my cases I didn't need the extra Ace Assist )
+- ✅ make failures easier to understand ( Ace in Idle while printing )
+- ✅ make service and recovery easier ( Makro buttons with safety )
+- ✅ tune from real-world testing, not theory alone
 
 ---
 
-## ⚙️ Configuration
 
-All distances are defined in **centimeters (cm)** by default.
 
-```ini
-length_unit: cm
+## 🧩 Influences
 
-load_length: 150
-unload_length: 150
+This project is based on a **SnapACE / MultiAce style direction**.
 
-load_length_slots: 150,150,150,150
-unload_length_slots: 150,150,150,150
-```
+It also includes practical lessons and ideas inspired by **MultiACE discussions**, but adapted to this specific setup and testing process.
 
-* Global values apply to all toolheads
-* Per-slot values override when needed
+So this is **not** a direct port of another project.
 
----
+It is a custom build shaped by:
 
-## 🔁 Workflow
-
-### Normal operation
-
-1. Insert filament into ACE
-2. USlave detects real insertion
-3. Auto-preload runs
-4. Use "Load Filament" on U1
-5. Final short move completes loading
+- SnapACE ideas
+- USlave Project
+- MultiACE inspiration
+- real machine testing
 
 ---
 
-## 🛠️ Manual Macros
+## 🚧 Current Status
 
-Used only for:
+This project is in a **working but still evolving** state.
 
-* recovery
-* calibration
-* maintenance
+### Stable enough for:
+- daily testing
+- real loading / unloading
+- retry tuning
+- macro-based service actions
+- Load/Unload TPU ( confirm manualaction in Remotescreen/Touchscreen and let ACE do the Unload ;)
+- TPU reload after unload, filament in the tume ( no fresh load )
 
-Not required for normal use.
+### Still under active work:
 
----
-
-## 🔒 Safety
-
-* Toolhead sensor stops movement
-* No full load after manual interference
-* No preload loops
-* No uncontrolled pushing
+- deciding whether **per-slot tube lengths** are truly worth keeping
+- further cleanup before calling it fully “done”
 
 ---
 
-## ⚡ Differences to SnapACE
+## 📌 Notes
 
-SnapACE:
+This project is tuned for **my own machine and filament path geometry**.
 
-* active assist system
-* shared feed length
-* deeper integration (extruder/kinematics)
+That means:
 
-USlave:
+- it may not be a universal drop-in solution
+- some values are intentionally tuned from testing
+- behavior should always be validated on the real machine
+- All values are well described in the ace.cfg
+- Follow SnapAce Installation path, replace same files. don't forget to also edit printer.cfg and include these lines
+  [include ace.cfg]
+  [save_variables]
+  filename: ~/printer_data/config/variables.cfg
 
-* passive, controlled slave behavior
-* per-toolhead calibration
-* reduced motor activity
-* simpler, more predictable flow
-
----
-
-## 📦 Installation
-
-See: `USLAVE_INSTALL.md`
 
 ---
 
-## 🧪 Testing
+## 💬 Summary
 
-See: `USLAVE_TEST_PROTOCOL.md`
+In short:
 
----
+**less noise, less randomness, more deterministic control.**
 
-## 🙏 Credits
-
-Based on ideas and groundwork from SnapACE.
-
----
-
-## 📢 Status
-
-Work in progress – designed for real-world testing and iterative improvement.
+This project was made with help of AI to stick together my Ideas. Use it at your own risk!!
